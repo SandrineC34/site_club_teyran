@@ -22,13 +22,13 @@ Ce document décrit comment réaliser la démonstration de la phase 1 directemen
 
 ## Avant de commencer
 
-### Étape 1 — Faire une sauvegarde complète
+### Étape 1 — Faire une sauvegarde complète (deja disponbile)
 
 1. Dans **Système > Installer > Extensions**, installer **Akeeba Backup** (gratuit).
 2. Lancer une **sauvegarde complète**.
 3. Télécharger le fichier `.jpa` sur votre ordinateur.
 
-> Ne jamais mettre ce fichier de sauvegarde dans Git.
+
 
 ### Étape 2 — Vérifier la version de Joomla
 
@@ -52,7 +52,10 @@ Réaliser l'installation **hors des périodes où des adhérents consultent le s
 
 **Utilisateurs > Groupes > Nouveau**, avec « Registered » comme groupe parent :
 
-- `Moniteur`
+- `Moniteurs` Fait
+![alt text](image.png)
+
+
 - `Gestionnaire vétérinaire`
 - `Gestionnaire financier`
 
@@ -60,10 +63,10 @@ Réaliser l'installation **hors des périodes où des adhérents consultent le s
 
 Un utilisateur du groupe « Registered » ne peut pas ouvrir l'administration par défaut.
 
-1. Aller dans **Système > Configuration globale > Permissions**.
+1. Aller dans **Système > Configuration globale > Droits**.
 2. Sélectionner chacun des trois groupes.
 3. Mettre **Connexion à l'administration** sur **Autorisé**.
-4. Ne leur accorder **aucun autre droit global** : ils ne verront ainsi que le composant Club.
+
 
 ### Étape 6 — Créer les utilisateurs de test
 
@@ -76,7 +79,10 @@ Un utilisateur du groupe « Registered » ne peut pas ouvrir l'administration pa
 | `finance.test` | Gestionnaire financier | `finance.test@example.com` |
 
 - Utiliser des **mots de passe longs et uniques** : ces comptes existent sur un site public.
-- Ne jamais utiliser les adresses de vrais membres.
+test avec 
+moniteursandrine
+Sam18052021@
+mail laposte
 
 ---
 
