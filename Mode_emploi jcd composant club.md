@@ -86,11 +86,22 @@ Si cet essai fonctionne, passez à la suite. Vous pouvez ensuite désinstaller `
 
 **Menu : Component Builder → Fields → New.**
 
-Pour chaque champ :
+**L'écran du formulaire** comporte :
 
-1. Onglet **Set Properties** : renseigner **Name**, **Label** et **Type**.
-2. Onglet **Database** : renseigner **Data Type**, **Length**, **Null Switch**. Laisser **Modelling Method** sur `Default`.
-3. **Save & Close**.
+- en haut, les boutons **Enregistrer**, **Enregistrer & Fermer**, **Enregistrer & Nouveau**, **Annuler** ;
+- trois zones : **Type \***, **Name \*** et **Category** ;
+- dessous, les onglets **Set Properties**, **Database**, **Scripts**, **Type Info**, **Publishing**, **Permissions**.
+
+**Pour chaque champ, dans cet ordre :**
+
+1. **Type** (liste déroulante en haut à gauche) : le choisir **en premier**. Tant qu'aucun type n'est sélectionné, l'onglet *Set Properties* affiche seulement le message « Please select a field type that you would like to build » et aucune propriété à remplir. Le type à choisir est indiqué dans les tableaux ci-dessous (par exemple **Text** pour un champ texte).
+2. **Name** : le nom système du champ, en minuscules, sans espace ni accent (`nom`, `prenom`, `date_naissance`…). C'est la valeur de la colonne « Name » des tableaux.
+3. **Category** : laisser vide.
+4. Onglet **Set Properties** : une fois le type choisi, les propriétés du champ s'affichent. Renseigner le **libellé** (colonne « Label » des tableaux) et, si l'option est proposée, la rendre **obligatoire** pour les champs `NOT NULL`.
+5. Onglet **Database** : renseigner **Data Type**, **Length** et **Null Switch** selon les tableaux. Laisser **Modelling Method** sur `Default`.
+6. Cliquer sur **Enregistrer & Nouveau** pour enchaîner avec le champ suivant (ou **Enregistrer & Fermer** pour le dernier).
+
+> **⚠ à vérifier** — Je n'ai pas vu le contenu de l'onglet *Set Properties* après le choix du type : l'emplacement exact du champ *Label* peut varier. Si vous ne le trouvez pas, ou si le type **Text** n'apparaît pas dans la liste, notez les types proposés avant de continuer.
 
 Un même champ peut être réutilisé dans plusieurs vues (par exemple `nom`). Si JCB le refuse, créez un champ distinct par vue.
 
@@ -110,16 +121,45 @@ Un même champ peut être réutilisé dans plusieurs vues (par exemple `nom`). S
 
 ### 5.2 Champs « liste » (Type : List, options statiques, VARCHAR 50)
 
-| Name | Label | Options |
+**Où saisir les options.** Choisir d'abord **Type = List** (en haut à gauche). JCB charge alors les réglages propres à ce type dans l'onglet **Set Properties** : c'est là que se trouve la zone des **options** de la liste. Tant que le type n'est pas choisi, cette zone n'existe pas, ce qui explique qu'on ne la voie pas.
+
+**Format de saisie** (d'après la documentation officielle de JCB) : une seule ligne, les options séparées par des virgules, chaque option écrite `valeur|libellé`.
+
+```text
+valeur1|Libellé 1,valeur2|Libellé 2,valeur3|Libellé 3
+```
+
+- Si la valeur et le libellé sont identiques, on peut omettre la barre verticale (`Actif,Inactif`).
+- Pour garder des valeurs propres en base de données, ce document utilise des valeurs sans accent ni espace, et le libellé affiché (avec accents) après la barre `|`.
+- Pas de guillemets dans les options, et pas de virgule à l'intérieur d'un libellé : la virgule sépare les options.
+
+| Name | Label | Options à saisir (ligne unique) |
 |---|---|---|
-| `statut_adherent` | Statut | Actif, Inactif |
-| `type_adhesion` | Type d'adhésion | Solo, Famille, Moniteur, Bienfaiteur |
-| `statut_chien` | Statut | Actif, Inactif, Parti |
-| `sexe` | Sexe | Mâle, Femelle |
-| `lof` | LOF | Oui, Non |
-| `relation` | Relation | Propriétaire principal, Copropriétaire, Responsable, Conducteur, Autre |
-| `jour` | Jour | Lundi, Mardi, Mercredi, Jeudi, Vendredi, Samedi, Dimanche |
-| `statut_groupe` | Statut | Actif, Inactif |
+| `statut_adherent` | Statut | `actif\|Actif,inactif\|Inactif` |
+| `type_adhesion` | Type d'adhésion | `solo\|Solo,famille\|Famille,moniteur\|Moniteur,bienfaiteur\|Bienfaiteur` |
+| `statut_chien` | Statut | `actif\|Actif,inactif\|Inactif,parti\|Parti` |
+| `sexe` | Sexe | `male\|Mâle,femelle\|Femelle` |
+| `lof` | LOF | `oui\|Oui,non\|Non` |
+| `relation` | Relation | `proprietaire_principal\|Propriétaire principal,coproprietaire\|Copropriétaire,responsable\|Responsable,conducteur\|Conducteur,autre\|Autre` |
+| `jour` | Jour | `lundi\|Lundi,mardi\|Mardi,mercredi\|Mercredi,jeudi\|Jeudi,vendredi\|Vendredi,samedi\|Samedi,dimanche\|Dimanche` |
+| `statut_groupe` | Statut | `actif\|Actif,inactif\|Inactif` |
+
+> Dans le tableau, la barre verticale est précédée d'un `\` uniquement pour l'affichage Markdown. **Dans JCB, saisir une barre simple `|`** : par exemple `actif|Actif,inactif|Inactif`.
+
+**Comment est présenté l'onglet *Set Properties*.** Il contient un tableau à trois colonnes : **Property** (liste déroulante), **Value** et **Description**. Chaque ligne correspond à un attribut du champ Joomla. Pour un champ de type List, JCB préremplit quelques lignes avec des exemples :
+
+| Ligne (Property) | Valeur préremplie | À faire |
+|---|---|---|
+| `type` | `list` | Ne pas modifier |
+| `name` | `mylist` | Remplacer par le même nom que celui saisi en haut dans **Name** (par exemple `statut_adherent`) |
+| `label` | `Select an option` | **Remplacer par le libellé du champ** (par exemple `Statut`) : c'est ici que se règle le Label |
+| `description`, `Message`… | vide | Laisser vide |
+
+Les options de la liste se saisissent dans une **autre ligne de ce même tableau**, plus bas : faire défiler la page vers le bas et repérer la ligne dont la colonne **Property** indique `options` (ou `option`). Coller dans sa colonne **Value** la ligne d'options du tableau ci-dessus (par exemple `actif|Actif,inactif|Inactif`). Si cette ligne n'existe pas, cliquer sur le menu déroulant d'une ligne vide de la colonne **Property** et choisir `options` dans la liste ; la colonne **Description** de la ligne explique ce que JCB attend.
+
+> **⚠ à vérifier** — L'intitulé exact de la ligne des options n'était pas visible sur ma capture (elle se trouve plus bas dans le tableau). Si vous ne la trouvez pas, envoyez-moi une capture de la suite du tableau.
+
+**Astuce pour le champ `email`** (section 5.1) : dans l'onglet *Set Properties*, JCB propose un réglage de **validation** ; choisir `Email` pour que Joomla vérifie le format de l'adresse.
 
 ### 5.3 Dates et nombre
 
@@ -159,32 +199,111 @@ Paramètres : **Type** = SQL ; **Data Type** = `INT` ; **Length** = `11`.
 
 **Menu : Component Builder → Admin Views → New.**
 
-Pour chaque vue :
+### 6.1 Procédure (à répéter pour chaque vue)
 
-1. Renseigner **Name (Singular)**, **Name (Plural)** et **System Name**.
-2. Onglet **Fields** → **Add Field**, puis ajouter les champs listés ci-dessous.
-3. Pour le champ « titre » : cocher **Show in list**, **Title field**, **Sortable**, **Searchable**, **Linked to edit view**.
-4. Pour les autres champs importants : cocher **Show in list**.
-5. **Save & Close**.
+1. Onglet **Details** : renseigner **Name (single record)** (singulier) et **Name (list of records)** (pluriel). Le **System Name** se remplit tout seul (par exemple `activite / activites`). Remplir aussi **Short Description**, qui est **obligatoire** (une courte phrase, par exemple « Activités pratiquées au club »). Laisser **Type** sur `read/write` ; les icônes sont facultatives.
+2. Cliquer sur **Enregistrer** (sans fermer) pour créer la vue une première fois.
+3. Ouvrir l'onglet **Fields**, section **Linked Fields**, puis cliquer sur **+ Create**. Le formulaire des champs liés s'ouvre.
+4. Pour chaque champ de la vue : cliquer sur le bouton vert **+** pour ajouter une ligne, sélectionner le champ dans la zone **Field \*** (bouton **Modifier** pour ouvrir la liste), puis régler la ligne selon les tableaux de la section 6.3.
+5. Cliquer sur **Enregistrer & Fermer**, vérifier que les champs apparaissent dans **Linked Fields**, puis **Enregistrer** la vue.
 
 > Fixer d'abord les noms de la vue, **enregistrer une première fois**, puis revenir ajouter les champs : JCB n'autorise l'ajout de certains éléments qu'après le premier enregistrement.
 
 > **Noms des vues** : choisir des noms **sans tiret bas** (`chienadherent` et non `chien_adherent`), pour éviter des soucis de nommage dans le code généré.
 
-| N° | Singular / Plural / System name | Champs à ajouter (titre en gras) |
-|---|---|---|
-| 1 | `activite` / `activites` | **`nom`** |
-| 2 | `niveau` / `niveaux` | **`nom`**, `activite_id` |
-| 3 | `adherent` / `adherents` | **`nom`**, `prenom`, `email`, `telephone`, `statut_adherent`, `type_adhesion`, `adherent_principal_id` |
-| 4 | `chien` / `chiens` | **`nom`**, `sexe`, `date_naissance`, `race`, `lof`, `num_lof`, `num_identification`, `statut_chien` |
-| 5 | `groupe` / `groupes` | **`nom`**, `activite_id`, `niveau_id`, `jour`, `heure`, `moniteur_id`, `lieu`, `capacite`, `statut_groupe` |
-| 6 | `chienadherent` / `chienadherents` | `chien_id`, `adherent_id`, `relation` |
-| 7 | `activitechien` / `activitechiens` | `chien_id`, `groupe_id`, `date_debut`, `date_fin` |
+### 6.2 Comment décider des réglages d'une ligne de champ
 
-**Notes :**
+Chaque ligne comporte les mêmes réglages. Règles appliquées dans les tableaux de 6.3 :
+
+| Réglage | Règle |
+|---|---|
+| **Order in Edit** | Position du champ dans le formulaire de saisie : 1 = en haut. Seul l'ordre compte (pas besoin de nombres consécutifs). |
+| **Order in list views** | `0` = champ **non affiché** dans la liste ; `1`, `2`, `3`… = colonne affichée, dans cet ordre. (Il n'existe pas de case « Show in list ».) |
+| **Title** | **Un seul champ par vue** : celui qui identifie l'enregistrement (`nom` en général). |
+| **Sortable** | Cocher pour les colonnes affichées dont le tri est utile (nom, statut, type, activité…). |
+| **Searchable** | Cocher pour les champs texte à retrouver par la zone de recherche (nom, prénom, email, race, n° d'identification…). Ne fonctionne que pour un champ affiché dans la liste. |
+| **Link** | Cocher **uniquement sur le champ titre** : un clic sur sa valeur ouvre la fiche. |
+| **Filter** | Laisser sur `No` pour la démonstration. |
+| **Admin**, **Admin Tabs**, **Alignment**, **Permissions** | Laisser les valeurs par défaut (`Default`, `Details`, `Left in Tab`). |
+
+### 6.3 Réglages complets, vue par vue
+
+Légende : ✔ = case à cocher ; — = laisser décoché ; liste = valeur de **Order in list views**.
+
+#### Vue 1 — `activite` / `activites`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `nom` | 1 | 1 | ✔ | ✔ | ✔ | ✔ |
+
+#### Vue 2 — `niveau` / `niveaux`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `nom` | 1 | 1 | ✔ | ✔ | ✔ | ✔ |
+| `activite_id` | 2 | 2 | — | ✔ | — | — |
+
+#### Vue 3 — `adherent` / `adherents`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `nom` | 1 | 1 | ✔ | ✔ | ✔ | ✔ |
+| `prenom` | 2 | 2 | — | ✔ | ✔ | — |
+| `email` | 3 | 3 | — | — | ✔ | — |
+| `telephone` | 4 | 0 | — | — | — | — |
+| `type_adhesion` | 5 | 4 | — | ✔ | — | — |
+| `statut_adherent` | 6 | 5 | — | ✔ | — | — |
+| `adherent_principal_id` | 7 | 0 | — | — | — | — |
+
+#### Vue 4 — `chien` / `chiens`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `nom` | 1 | 1 | ✔ | ✔ | ✔ | ✔ |
+| `sexe` | 2 | 3 | — | ✔ | — | — |
+| `date_naissance` | 3 | 0 | — | — | — | — |
+| `race` | 4 | 2 | — | ✔ | ✔ | — |
+| `lof` | 5 | 0 | — | — | — | — |
+| `num_lof` | 6 | 0 | — | — | — | — |
+| `num_identification` | 7 | 4 | — | — | ✔ | — |
+| `statut_chien` | 8 | 5 | — | ✔ | — | — |
+
+#### Vue 5 — `groupe` / `groupes`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `nom` | 1 | 1 | ✔ | ✔ | ✔ | ✔ |
+| `activite_id` | 2 | 2 | — | ✔ | — | — |
+| `niveau_id` | 3 | 3 | — | ✔ | — | — |
+| `jour` | 4 | 4 | — | ✔ | — | — |
+| `heure` | 5 | 5 | — | — | — | — |
+| `moniteur_id` | 6 | 6 | — | — | — | — |
+| `lieu` | 7 | 0 | — | — | — | — |
+| `capacite` | 8 | 0 | — | — | — | — |
+| `statut_groupe` | 9 | 7 | — | ✔ | — | — |
+
+#### Vue 6 — `chienadherent` / `chienadherents`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `chien_id` | 1 | 1 | ✔ | ✔ | — | ✔ |
+| `adherent_id` | 2 | 2 | — | ✔ | — | — |
+| `relation` | 3 | 3 | — | ✔ | — | — |
+
+#### Vue 7 — `activitechien` / `activitechiens`
+
+| Champ | Order in Edit | Liste | Title | Sortable | Searchable | Link |
+|---|---|---|---|---|---|---|
+| `chien_id` | 1 | 1 | ✔ | ✔ | — | ✔ |
+| `groupe_id` | 2 | 2 | — | ✔ | — | — |
+| `date_debut` | 3 | 3 | — | ✔ | — | — |
+| `date_fin` | 4 | 4 | — | — | — | — |
+
+### 6.4 Notes
 
 - **Vues 6 et 7** : ce sont des tables de liaison. La vue 6 réalise la relation plusieurs-à-plusieurs chien / adhérent (une ligne par couple : SAM → Sandrine, SAM → Jean). La vue 7 réalise l'affectation chien → groupe.
-- **⚠ à vérifier** — Ces deux vues n'ont pas de champ texte naturel pour le « titre ». Si JCB en exige un, ajouter un champ texte facultatif `libelle` (Libellé) dans chacune.
+- **⚠ à vérifier** — Ces deux vues n'ont pas de champ texte naturel pour le titre : on désigne `chien_id` comme titre. Si JCB exige un vrai champ texte, ou si la liste affiche un numéro à la place du nom du chien, ajouter un champ texte facultatif `libelle` (Libellé) dans chacune de ces vues et le désigner comme titre.
+- **Nom des champs** : si vous avez nommé un champ différemment (par exemple `status_adherent` au lieu de `statut_adherent`), sélectionnez simplement celui qui existe dans la liste.
 - **Familles** : le champ `adherent_principal_id` de la vue `adherent` suffit pour la démonstration.
 - **Photo du chien** : omise dans cette démonstration, à ajouter plus tard.
 
@@ -280,6 +399,7 @@ git push
 |---|---|
 | L'installation échoue : « aucune vue » | Relier au moins une vue d'administration au composant. |
 | La compilation s'arrête | Augmenter la mémoire PHP (`memory_limit`). |
+| « Le formulaire ne peut pas être soumis, car certaines données requises ne sont pas complétées » à l'enregistrement d'un champ | Un champ obligatoire est vide : repérer les zones surlignées en rouge et les onglets marqués. Pour un champ List, vérifier la ligne `options` (onglet Set Properties), supprimer les lignes de propriétés vides (bouton rouge −), et remplir **Data Type**, **Length** et **Null Switch** dans l'onglet Database. |
 | Une liste déroulante est vide | Saisir d'abord des enregistrements dans la table liée ; vérifier le nom de la table dans la requête. |
 | Erreur SQL à l'ouverture d'une fiche | La requête du champ SQL renvoie un nom de table ou de colonne incorrect : la tester dans phpMyAdmin. |
 | Le type SQL est absent | Utiliser le champ Number (INT) et saisir les identifiants à la main pour la démonstration. |
