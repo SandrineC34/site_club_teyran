@@ -101,6 +101,8 @@ Si cet essai fonctionne, passez à la suite. Vous pouvez ensuite désinstaller `
 5. Onglet **Database** : renseigner **Data Type**, **Length** et **Null Switch** selon les tableaux. Laisser **Modelling Method** sur `Default`.
 6. Cliquer sur **Enregistrer & Nouveau** pour enchaîner avec le champ suivant (ou **Enregistrer & Fermer** pour le dernier).
 
+> **Important — ligne `name` de l'onglet Set Properties.** Pour **tous** les types de champ (Text, List, SQL…), JCB préremplit la ligne `name` avec un exemple (`mytextvalue`, `mylist`, `title`…). Il faut la remplacer par le nom du champ (le même que celui saisi en haut dans **Name**), sinon plusieurs champs porteront le même nom. Dans le tableau *Linked Fields* d'une vue, chaque champ est affiché sous la forme `nom_du_champ [valeur de la ligne name - type]` : les deux noms doivent être identiques (par exemple `prenom [prenom - Text]`, et non `prenom [mytextvalue - Text]`).
+
 > **⚠ à vérifier** — Je n'ai pas vu le contenu de l'onglet *Set Properties* après le choix du type : l'emplacement exact du champ *Label* peut varier. Si vous ne le trouvez pas, ou si le type **Text** n'apparaît pas dans la liste, notez les types proposés avant de continuer.
 
 Un même champ peut être réutilisé dans plusieurs vues (par exemple `nom`). Si JCB le refuse, créez un champ distinct par vue.
@@ -309,6 +311,11 @@ Légende : ✔ = case à cocher ; — = laisser décoché ; liste = valeur de **
 
 ---
 
+
+Field Relations sert à lier des champs entre eux dans un même formulaire, par exemple une liste de niveaux qui change selon l'activité choisie. Ce n'est pas dans le cahier des charges de la phase 1.
+Field Conditions sert à afficher un champ seulement si un autre a une certaine valeur, par exemple « Numéro LOF » uniquement quand LOF est sur « Oui ». C'est une amélioration de confort, pas un prérequis. Vous pourrez l'ajouter plus tard.
+
+Attention pour les activités si faudra revoir cela
 ## 7. Créer le composant `club`
 
 **Menu : Component Builder → Components → New.**
@@ -400,6 +407,9 @@ git push
 | L'installation échoue : « aucune vue » | Relier au moins une vue d'administration au composant. |
 | La compilation s'arrête | Augmenter la mémoire PHP (`memory_limit`). |
 | « Le formulaire ne peut pas être soumis, car certaines données requises ne sont pas complétées » à l'enregistrement d'un champ | Un champ obligatoire est vide : repérer les zones surlignées en rouge et les onglets marqués. Pour un champ List, vérifier la ligne `options` (onglet Set Properties), supprimer les lignes de propriétés vides (bouton rouge −), et remplir **Data Type**, **Length** et **Null Switch** dans l'onglet Database. |
+| Dans **Linked Fields**, un champ s'affiche avec un nom entre crochets différent de son nom (`prenom [mytextvalue - Text]`) | La ligne `name` du champ contient encore l'exemple de JCB. Modifier le champ (icône crayon), onglet Set Properties, et la remplacer par le nom du champ. |
+| Un cadenas apparaît à côté d'un champ dans **Linked Fields** | Le champ est probablement verrouillé (ouvert puis quitté sans enregistrer). Cliquer sur le cadenas pour le déverrouiller. |
+| Impossible de modifier **Order in list views** depuis le tableau *Linked Fields* | Ce tableau est un résumé en lecture seule : cliquer sur le bouton **Edit** à côté du titre *Linked Fields*, puis choisir la valeur dans la liste déroulante de chaque ligne. |
 | Une liste déroulante est vide | Saisir d'abord des enregistrements dans la table liée ; vérifier le nom de la table dans la requête. |
 | Erreur SQL à l'ouverture d'une fiche | La requête du champ SQL renvoie un nom de table ou de colonne incorrect : la tester dans phpMyAdmin. |
 | Le type SQL est absent | Utiliser le champ Number (INT) et saisir les identifiants à la main pour la démonstration. |
